@@ -22,7 +22,11 @@ async function run() {
   try {
     await client.connect();
 
-    const items = client.db("Doodle_Nation").collection("Popular_Products");
+    const collection = client.db("Doodle_Nation");
+
+    const items = collection.collection("Popular_Products");
+    const userData = collection.collection("user submitted data");
+
     app.get("/items", async (req, res) => {
       const cursor = items.find();
       const result = await cursor.toArray();
@@ -33,6 +37,18 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await items.findOne(query);
+      res.send(result);
+    });
+
+    app.post("/data", async (req, res) => {
+      const data = req.body;
+      const result = await userData.insertOne(data);
+      res.send(result);
+    });
+
+    app.get("/data", async (req, res) => {
+      const cursor = userData.find();
+      const result = await cursor.toArray();
       res.send(result);
     });
 
