@@ -6,7 +6,14 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+const corsConfig = {
+  origin: ["http://localhost:5173"],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+};
+app.use(cors(corsConfig));
+app.options("", cors(corsConfig));
+
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASS}@cluster0.hvsdcgj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -20,8 +27,6 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   try {
-    await client.connect();
-
     const collection = client.db("Doodle_Nation");
 
     const items = collection.collection("Popular_Products");
@@ -85,7 +90,6 @@ async function run() {
       res.send(result);
     });
 
-    await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
