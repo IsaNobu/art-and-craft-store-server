@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 const corsConfig = {
-  origin: ["http://localhost:5173"],
+  origin: ["https://assignment-10-2417c.web.app"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
 };
