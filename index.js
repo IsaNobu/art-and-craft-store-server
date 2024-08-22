@@ -7,12 +7,13 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 const corsConfig = {
-  origin: ["https://assignment-10-2417c.web.app"],
+  origin: ["https://assignment-10-2417c.web.app", "http://localhost:5173"],
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  optionSuccessStatus: 200,
+  // methods: ["GET", "POST", "PUT", "DELETE"],
 };
 app.use(cors(corsConfig));
-app.options("", cors(corsConfig));
+// app.options("", cors(corsConfig));
 
 app.use(express.json());
 
@@ -68,18 +69,20 @@ async function run() {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const option = { upsert: true };
-      const update = req.body;
-      const item = {
+      const product = req.body;
+      const updateDoc = {
         $set: {
-          itemName: update.itemName,
-          url: update.url,
-          price: update.price,
-          rating: update.rating,
-          Customizability: update.Customizability,
-          stockStatus: update.stockStatus,
+          item_name: product.itemName,
+          url: product.url,
+          price: product.price,
+          rating: product.rating,
+          Customizability: product.Customizability,
+          stockStatus: product.stockStatus,
         },
       };
-      const result = await userData.updateOne(filter, item, option);
+      const result = await userData.updateOne(filter, updateDoc, option);
+      console.log(result);
+
       res.send(result);
     });
 
@@ -89,10 +92,6 @@ async function run() {
       const result = await userData.deleteOne(query);
       res.send(result);
     });
-
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
   } finally {
   }
 }
